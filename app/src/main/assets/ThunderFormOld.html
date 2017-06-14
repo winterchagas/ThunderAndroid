@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>THUNDER FORM</title>
+    <meta name="description" content="CHECKLIST"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+
+    <style>
+        td, th {
+            text-align: left;
+            width: 200px;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        InsertDateName = function () {
+            var dateObj = new Date();
+            var day = dateObj.getDate().toString();
+            var monthNum = dateObj.getMonth()+1;
+            var month = monthNum.toString();
+            var year = dateObj.getFullYear().toString();
+            if(day<10) {
+                day='0'+day}
+            if(month<10) {
+                month='0'+month}
+            dates = month.concat("/").concat(day).concat("/").concat(year);
+            document.getElementById("date_completed").value = dates;
+            document.getElementById("first_name").value = "Leonardo";
+            document.getElementById("last_name").value = "Winter";
+        };
+
+        SetYes = function (html_id, type) {
+            document.getElementById(html_id).checked = true;
+            FormTypes[type] = html_id;
+        };
+
+        var FormTypes = {
+            'violation_posted': "", 'postings_notices': "",
+            'occupancy_status': "", 'vacancy_posting_left': "", 'card_left': "",
+            'letter_delivered': "", 'submission_statement': "", 'occupancy_verified_by': [],
+            'building_type': "", 'stories': "", 'construction_type': "", 'color': "",
+            'garage': "", 'additional_buildings': "", 'yard': "", 'roof': "",
+            'property_condition': "", 'property_damaged': "", 'property_value': "",
+            'for_sale': "", 'neighborhood_condition': "", 'how_many_sides': "",
+            'appear_vacant': "", 'safety_violations': "", 'presently_for_sale': "",
+            'typical_neighborhood': "", 'under_construction': "", 'roof_condition': "",
+            'windows_condition': "", 'finish_material': "", 'condition_finish_material': "",
+            'condition_foundation': "", 'condition_landscape': "", 'relation_to_properties': "",
+            'general_comments': "", 'external_factors': [], 'external_factors_comments': "",
+            'comments': "", 'six_damage': "", 'safety_issue': "", 'exterior_debris': "",
+            'lawn_maintenance': "", 'property_vacant': "", 'escalated_events': "", 'roof_damage': "",
+            'signs_vandalism': "", 'unsecured_openings': "", 'notice_posted': "", 'code_of_conduct': ""
+        };
+
+        var dictCountOcc = [];
+        var dictCountExt = [];
+        SetOccupancyExternal = function (html_id, type) {
+            if (document.getElementById(html_id).checked) {
+                document.getElementById(html_id).checked = false;
+                if (type == 'external_factors') {
+                    var index = dictCountExt.indexOf(html_id);
+                    dictCountExt.splice(index, 1);
+                }
+                else {
+                    var index = dictCountOcc.indexOf(html_id);
+                    dictCountOcc.splice(index, 1);
+                }
+            }
+            else {
+                document.getElementById(html_id).checked = true;
+                if (type == 'external_factors') {
+                    dictCountExt.push(html_id);
+                }
+                else {
+                    dictCountOcc.push(html_id);
+                }
+            }
+        };
+
+        Validate = function () {
+            FormTypes.occupancy_verified_by.push(dictCountOcc);
+            FormTypes.external_factors.push(dictCountExt);
+            FormTypes.general_comments = document.getElementById("general_comments").value;
+            FormTypes.external_factors_comments = document.getElementById("external_factors_comments").value;
+            FormTypes.comments = document.getElementById("comments").value;
+            for (x in FormTypes) {
+                if (FormTypes[x] == "") {
+                    showAndroidToast("Some required fields are blank.");
+                    return;
+                }
+            }
+            var FormString = JSON.stringify(FormTypes);
+            showAndroidToast("Form validated and submitted.");
+            //callAndroidDatabase(FormString);
+        };
+        
+        function showAndroidToast(toast) {
+            AndroidFunction.showToast(toast);
+        }
+
+        function callAndroidDatabase(dict) {
+            AndroidFunction.saveInfoDatabase(dict);
+        }
+
+        /*function callFromActivity(msg) {
+            document.getElementById("mytext").innerHTML = msg;
+            //return "ALO";
+        }*/
+
+    </script>
+
+</head>
+
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">DATE COMPLETED</h3>
+    </div>
+    <div class="panel-body">
+        <input type="text" class="form-control" id="date_completed"/>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">INSPECTOR NAME</h3>
+    </div>
+    <div class="panel-body">
+        <label>First Name:</label>
+        <input type="text" class="form-control" id="first_name"/>
+        <label>Last Name:</label>
+        <input type="text" class="form-control" id="last_name"/>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">VIOLATION POSTED</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table id="tb_violation_posted">
+                <tr>
+                    <form>
+                        <td onclick="SetYes('violation_posted_yes', 'violation_posted');">
+                            <Input type="radio" name="radio" id="violation_posted_yes" value='yes'/> YES
+                        </td>
+                        <td onclick="SetYes('violation_posted_no', 'violation_posted');">
+                            <Input type="radio" name="radio" id="violation_posted_no" value='no'/> NO <br/>
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">POSTINGS/NOTICES</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('posting_notices_yes' , 'postings_notices');">
+                            <Input type="radio" name="radio" id="posting_notices_yes"/> YES
+                        </td>
+                        <td onclick="SetYes('posting_notices_no', 'postings_notices');">
+                            <Input type="radio" name="radio" id="posting_notices_no"/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">OCCUPANCY STATUS</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+
+            <table>
+                <th></th>
+
+                <form><tr>
+
+                        <td onclick="SetYes('occupied_by_owner', 'occupancy_status');">
+                            <Input type="radio" name="radio" id="occupied_by_owner"/> Occupied By Owner
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('occupied_by_unknow', 'occupancy_status');">
+                        <Input type="radio" name="radio" id="occupied_by_unknow"/> Occupied By Unkown
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('occupied_by_tenant', 'occupancy_status');">
+                        <Input type="radio" name="radio" id="occupied_by_tenant"/> Occupied By Tenant
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('partial_vacant', 'occupancy_status');">
+                        <Input type="radio" name="radio" id="partial_vacant"/> Partial Vacant - Multi Unit
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('vacant', 'occupancy_status');">
+                        <Input type="radio" name="radio" id="vacant"/> Vacant
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('bad_address', 'occupancy_status');">
+                        <Input type="radio" name="radio" id="bad_address"/> Bad Address
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('no_access', 'occupancy_status');">
+                        <Input type="radio" name="radio" id="no_access"/> No Access
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('out_of_area', 'occupancy_status');">
+                        <Input type="radio" name="radio" id="out_of_area"/> Out of Area
+                    </td>
+
+                </tr>
+                </form>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">DOCUMENTS</h3>
+    </div>
+    <div class="panel-body">
+        Vacancy Posting Left at Property?
+        <div class="bs-checkbox">
+            <form>
+            <table>
+                <tr>
+
+
+                        <td onclick="SetYes('documents_yes' ,'vacancy_posting_left');">
+                            <Input type="radio" name="radio" id="documents_yes"/> YES
+                        </td>
+                        <td onclick="SetYes('documents_no', 'vacancy_posting_left');">
+                            <Input type="radio" name="radio" id="documents_no"/> NO <br/>
+                        </td>
+
+                </tr>
+            </table>
+            </form>
+        </div>
+
+        Card Left at Property?
+        <div class="bs-checkbox">
+            <table>
+                <form>
+                <tr>
+
+                        <td onclick="SetYes('card_left_yes', 'card_left');">
+                            <Input type="radio" name="radio" id="card_left_yes"/> YES
+                        </td>
+                        <td onclick="SetYes('card_left_no', 'card_left');">
+                            <Input type="radio" name="radio" id="card_left_no"/> NO<br/>
+                        </td>
+
+                </tr>
+                </form>
+            </table>
+        </div>
+
+
+        Letter Delivered to Property?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('letter_delivered_yes', 'letter_delivered');">
+                            <Input type="radio" name="radio" id="letter_delivered_yes"/> YES
+                        </td>
+                        <td onclick="SetYes('letter_delivered_no', 'letter_delivered');">
+                            <Input type="radio" name="radio" id="letter_delivered_no"/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">SUBMISSION STATEMENT</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <tr onclick="SetYes('submission_yes', 'submission_statement');">
+                    <td colspan="2">
+                        By submitting this inspection, I represent and warrant that I have conducted a visual
+                        inspection of the exterior of this property, and that to the best of my knowledge,
+                        the information contained in this report is accurate. I further represent and warrant
+                        that I have no current or prospective financial or other interest in this property. <br/>
+                        <Input type="radio" name="radio" id="submission_yes"/> YES
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">OCCUPANCY VERIFIED BY</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Contact', 'occupancy_verified_by');">
+                        <Input type="checkbox" name=" Contact" id="Contact"/> Contact
+                    </td>
+                    <td onclick="SetOccupancyExternal('Meter', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Meter" id="Meter"/> Meter
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Visual', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Visual" id="Visual"/> Visual
+                    </td>
+                    <td onclick="SetOccupancyExternal('Mailbox', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Mailbox" id="Mailbox"/> Mailbox
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Neighbor', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Neighbor" id="Neighbor"/> Neighbor
+                    </td>
+                    <td onclick="SetOccupancyExternal('Mail_carrier', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Mail Carrier" id="Mail_carrier"/> Mail Carrier
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Utilities_on', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Utilities On" id="Utilities_on"/> Utilities On
+                    </td>
+                    <td onclick="SetOccupancyExternal('Activity_noise', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Activity/ Noise" id="Activity_noise"/> Activity/Noise
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Car_driveway', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Car in driveway" id="Car_driveway"/> Car in driveway
+                    </td>
+                    <td onclick="SetOccupancyExternal('Furniture', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Furniture" id="furniture"/> Furniture
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Furniture_inside', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Furniture outside" id="Furniture_inside"/> Furniture outside
+                    </td>
+                    <td onclick="SetOccupancyExternal('Garbage_bins', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Garbage bins" id="Garbage_bins"/> Garbage bins
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('People_inside', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="People inside" id="People_inside"/> People inside
+                    </td>
+                    <td onclick="SetOccupancyExternal('People_outside', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="People outside" id="People_outside"/> People outside
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Personals_garage', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Personals - garage" id="Personals_garage"/> Personals - garage
+                    </td>
+                    <td onclick="SetOccupancyExternal('Personals_inside', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Personals inside" id="Personals_inside"/> Personals inside
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Personals_outside', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Personals outside" id="Personals_outside"/> Personals outside
+                    </td>
+                    <td onclick="SetOccupancyExternal('Pets_animals', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Pets/Animals" id="Pets_animals"/> Pets/Animals
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Radio_tv', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Radio/tv heard" id="Radio_tv"/> Radio/tv heard
+                    </td>
+                    <td onclick="SetOccupancyExternal('Vehicle_present', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Vehicle present" id="Vehicle_present"/> Vehicle present
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('yard_maintained', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="yard maintained" id="yard_maintained"/> yard maintained
+                    </td>
+                    <td onclick="SetOccupancyExternal('Handed_doorcard', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Handed doorcard" id="Handed_doorcard"/> Handed doorcard
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('No_personals', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="No personals" id="No_personals"/> No personals
+                    </td>
+                    <td onclick="SetOccupancyExternal('Debris_present', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Debris present" id="Debris_present"/> Debris present
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Property_not_maintained', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Property not maintained" id="Property_not_maintained"/> Property
+                        not maintained
+                    </td>
+                    <td onclick="SetOccupancyExternal('yard_not_maintained', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="yard not maintained" id="yard_not_maintained"/> yard not maintained
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Vacancy_signage', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Vacancy signage" id="Vacancy_signage"/> Vacancy signage
+                    </td>
+                    <td onclick="SetOccupancyExternal('Abandoned_vehicles', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Abandoned vehicles" id="Abandoned_vehicles"/> Abandoned vehicles
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetOccupancyExternal('Padlock_present', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Padlock present" id="Padlock_present"/> Padlock present
+                    </td>
+                    <td onclick="SetOccupancyExternal('Occupancy_Other', 'occupancy_verified_by');">
+                        <Input type="checkbox" name="Other" id="Occupancy_Other"/> Other
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">BUILDING TYPE</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Single','building_type');">
+                            <Input type="radio" name="radio" id="Single"/> Single
+                        </td>
+                        <td onclick="SetYes('Condo','building_type');">
+                            <Input type="radio" name="radio"/ id="Condo"> Condo/ Townhouse
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Non_residential','building_type');">
+                        <Input type="radio" name="radio" id="Non_residential"/> Non-residential
+                    </td>
+                    <td onclick="SetYes('Mobile','building_type');">
+                        <Input type="radio" name="radio" id="Mobile"/> Mobile
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Modular','building_type');">
+                        <Input type="radio" name="radio" id="Modular"/> Modular
+                    </td>
+                    <td onclick="SetYes('Manufactured','building_type');">
+                        <Input type="radio" name="radio" id="Manufactured"/> Manufactured
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Duplex','building_type');">
+                        <Input type="radio" name="radio" id="Duplex"/> Duplex
+                    </td>
+                    <td onclick="SetYes('Triplex','building_type');">
+                        <Input type="radio" name="radio" id="Triplex"/> Triplex
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Quadplex','building_type');">
+                        <Input type="radio" name="radio" id="Quadplex"/> Quadplex
+                    </td>
+                    <td onclick="SetYes('Building_Other','building_type');">
+                        <Input type="radio" name="radio" id="Building_Other"/> Other
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">STORIES</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+
+                <tr>
+                    <form>
+                        <td onclick="SetYes('1','stories');">
+                            <Input type="radio" name="radio" id="1"/> 1
+                        </td>
+                        <td onclick="SetYes('1.5','stories');">
+                            <Input type="radio" name="radio" id="1.5"/> 1.5
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('2','stories');">
+                        <Input type="radio" name="radio" id="2"/> 2
+                    </td>
+                    <td onclick="SetYes('3+','stories');">
+                        <Input type="radio" name="radio" id="3+"/> 3+
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Split','stories');">
+                        <Input type="radio" name="radio" id="Split"/> Split
+                    </td>
+                    </form>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">CONSTRUCTION TYPES</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Brick','construction_type');">
+                            <Input type="radio" name="radio" id="Brick"/> Brick
+                        </td>
+                        <td onclick="SetYes('Stucco','construction_type');">
+                            <Input type="radio" name="radio" id="Stucco"/> Stucco
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Stone','construction_type');">
+                        <Input type="radio" name="radio" id="Stone"/> Stone
+                    </td>
+                    <td onclick="SetYes('Frame','construction_type');">
+                        <Input type="radio" name="radio" id="Frame"/> Frame
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Concrect','construction_type');">
+                        <Input type="radio" name="radio Block" id="Concrect"/> Concrect Block
+                    </td>
+                    <td onclick="SetYes('construction_other','construction_type');">
+                        <Input type="radio" name="radio" id="construction_other"/> Other
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">COLOR</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+
+            <table>
+
+                <tr>
+                    <form>
+                        <td onclick="SetYes('White', 'color');">
+                            <Input type="radio" name="radio" id='White'/> White
+                        </td>
+                        <td onclick="SetYes('Yellow', 'color');">
+                            <Input type="radio" name="radio" id='Yellow'/> Yellow
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Beige', 'color');">
+                        <Input type="radio" name="radio" id='Beige'/> Beige/ Tan
+                    </td>
+                    <td onclick="SetYes('Gray', 'color');">
+                        <Input type="radio" name="radio" id='Gray'/> Gray
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Brown', 'color');">
+                        <Input type="radio" name="radio" id='Brown'/> Brown
+                    </td>
+                    <td onclick="SetYes('Red', 'color');">
+                        <Input type="radio" name="radio" id='Red'/> Red/ Pink
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Green', 'color');">
+                        <Input type="radio" name="radio" id='Green'/> Green
+                    </td>
+                    <td onclick="SetYes('Natural', 'color');">
+                        <Input type="radio" name="radio" id='Natural'/> Natural
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Blue', 'color');">
+                        <Input type="radio" name="radio" id='Blue'/> Blue
+                    </td>
+                    <td onclick="SetYes('color_other', 'color');">
+                        <Input type="radio" name="radio" id='color_other'/> Other
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">GARAGE</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('1car', 'garage');">
+                            <Input type="radio" name="radio" id='1car'/> 1 Car
+                        </td>
+                        <td onclick="SetYes('2cars', 'garage');">
+                            <Input type="radio" name="radio" id='2cars'/> 2 Cars
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('3cars', 'garage');">
+                        <Input type="radio" name="radio" id='3cars'/> 3 Cars
+                    </td>
+                    <td onclick="SetYes('garage_other', 'garage');">
+                        <Input type="radio" name="radio" id='garage_other'/> Other
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('garage_no', 'garage');">
+                        <Input type="radio" name="radio" id='garage_no'/> NO
+                </tr>
+                </form>
+                <td>
+            </table>
+        </div>
+        <br>
+
+    </div>
+</div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">PROPERTY HAS ADDITIONAL BUILDINGS?</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('add_building_yes', 'additional_buildings');">
+                            <Input type="radio" name="radio" id='add_building_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('add_building_no', 'additional_buildings');">
+                            <Input type="radio" name="radio" id='add_building_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">YARD</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('no_lawn', 'yard');">
+                            <Input type="radio" name="radio" id='no_lawn'/> No Lawn
+                        </td>
+                        <td onclick="SetYes('Snow', 'yard');">
+                            <Input type="radio" name="radio" id='Snow'/> Snow
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Maintained_by_hoa', 'yard');">
+                        <Input type="radio" name="Mradio" id='Maintained_by_hoa'/> Maintained by HOA
+                    </td>
+                    <td onclick="SetYes('cannot_determine', 'yard');">
+                        <Input type="radio" name="radio" id='cannot_determine'/> Cannot Determine
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('desert_landscape', 'yard');">
+                        <Input type="radio" name="radio" id='desert_landscape'/> Desert Landscape
+                    </td>
+                    <td onclick="SetYes('debris_obstruction', 'yard');">
+                        <Input type="radio" name="radio" id='debris_obstruction'/> Debris Obstruction
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('saturated_lawn', 'yard');">
+                        <Input type="radio" name="radio"/> Saturated Lawn
+                    </td>
+                    <td onclick="SetYes('cut_unknown', 'yard');">
+                        <Input type="radio" name="radio" id='cut_unknown'/> Cut by Unkown
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('dormant_grass', 'yard');">
+                        <Input type="radio" name="radio" id='dormant_grass'/> Dormant Grass
+                    </td>
+                    <td onclick="SetYes('grass_02', 'yard');">
+                        <Input type="radio" name="radio" id='grass_02'/> Grass 0-2 inches
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_23', 'yard');">
+                        <Input type="radio" name="radio" id='grass_23'/> Grass 2-3 inches
+                    </td>
+                    <td onclick="SetYes('grass_34', 'yard');">
+                        <Input type="radio" name="radio" id='grass_34'/> Grass 3-4 inches
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_45', 'yard');">
+                        <Input type="radio" name="radio" id='grass_45'/> Grass 4-5 inches
+                    </td>
+                    <td onclick="SetYes('grass_56', 'yard');">
+                        <Input type="radio" name="radio" id='grass_56'/> Grass 5-6 inches
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_67', 'yard');">
+                        <Input type="radio" name="radio" id='grass_67'/> Grass 6-7 inches
+                    </td>
+                    <td onclick="SetYes('grass_78', 'yard');">
+                        <Input type="radio" name="radio" id='grass_78'/> Grass 7-8 inches
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_89', 'yard');">
+                        <Input type="radio" name="radio" id='grass_89'/> Grass 8-9 inches
+                    </td>
+                    <td onclick="SetYes('grass_910', 'yard');">
+                        <Input type="radio" name="radio" id='grass_910'/> Grass 9-10 inches
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_1011', 'yard');">
+                        <Input type="radio" name="radio" id='grass_1011'/> Grass 10"-11"
+                    </td>
+                    <td onclick="SetYes('grass_1112', 'yard');">
+                        <Input type="radio" name="radio" id='grass_1112'/> Grass 11"-12
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_1213', 'yard');">
+                        <Input type="radio" name="radio" id='grass_1213'/> Grass 12"-13"
+                    </td>
+                    <td onclick="SetYes('grass_1324', 'yard');">
+                        <Input type="radio" name="radio" id='grass_1324'/> Grass 13"-24"
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_2536', 'yard');">
+                        <Input type="radio" name="radio" id='grass_2536'/> Grass 25"-36"
+                    </td>
+                    <td onclick="SetYes('grass_3748', 'yard');">
+                        <Input type="radio" name="radio" id='grass_3748'/> Grass 37"-48
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('grass_49', 'yard');">
+                        <Input type="radio" name="radio" id='grass_49'/> Grass 49"+
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">ROOF</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+
+            <table>
+                <form>
+                    <tr>
+
+                        <td onclick="SetYes('asphalt_shingle', 'roof');">
+                            <Input type="radio" name="radio" id='asphalt_shingle'/> Asphalt Shingle
+                        </td>
+                        <td onclick="SetYes('Meta', 'roof');">
+                            <Input type="radio" name="radio" id='Meta'/> Meta
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('Slate', 'roof');">
+                            <Input type="radio" name="radio" id='Slate'/> Slate
+                        </td>
+                        <td onclick="SetYes('Tile', 'roof');">
+                            <Input type="radio" name="radio" id='Tile'/> Tile
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('wood_shingle', 'roof');">
+                            <Input type="radio" name="radio" id='wood_shingle'/> Wood Shingle
+                        </td>
+                        <td onclick="SetYes('roof_other', 'roof');">
+                            <Input type="radio" name="radio" id='roof_other'/> Other
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('roof_not_visible', 'roof');">
+                            <Input type="radio" name="radio" id='roof_not_visible'/> Not Visible
+                        </td>
+
+                    </tr>
+                </form>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">PROPERTY CONDITION</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <form>
+                    <tr>
+
+                        <td onclick="SetYes('Good', 'property_condition');">
+                            <Input type="radio" name="radio" id='Good'/> Good
+                        </td>
+                        <td onclick="SetYes('Fair', 'property_condition');">
+                            <Input type="radio" name="radio" id='Fair'/> Fair
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('Poor', 'property_condition');">
+                            <Input type="radio" name="radio" id='Poor'/> Poor
+                        </td>
+                        <td onclick="SetYes('violation', 'property_condition');">
+                            <Input type="radio" name="radio" id='violation'/> Violation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('condition_other', 'property_condition');">
+                            <Input type="radio" name="radio" id='condition_other'/> Other
+                        </td>
+
+                    </tr>
+                </form>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">PROPERTY DAMAGE</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+
+            <table>
+                <th></th>
+                <th></th>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('property_damaged_yes', 'property_damaged');">
+                            <Input type="radio" name="property_damaged" id='property_damaged_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('property_damaged_no', 'property_damaged');">
+                            <Input type="radio" name="property_damaged" id='property_damaged_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">PROPERTY VALUE</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <form>
+                    <tr>
+
+                        <td onclick="SetYes('0_100', 'property_value');">
+                            <Input type="radio" name="property_value" id='0_100'/> $0K - $100K<br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('100_200', 'property_value');">
+                            <Input type="radio" name="property_value" id='100_200'/> $100K - $200K<br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('200_500', 'property_value');">
+                            <Input type="radio" name="property_value" id='200_500'/> $200K - $500K<br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('over_500', 'property_value');">
+                            <Input type="radio" name="property_value" id='over_500'/> Over $500K<br/>
+                        </td>
+
+                    </tr>
+                </form>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">FOR SALE</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+
+            <table>
+                <th></th>
+                <th></th>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('for_sale_yes', 'for_sale');">
+                            <Input type="radio" name="for_sale" id='for_sale_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('for_sale_no', 'for_sale');">
+                            <Input type="radio" name="for_sale" id='for_sale_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">NEIGHBORHOOD CONDITION</h3>
+    </div>
+    <div class="panel-body">
+        <div class="bs-checkbox">
+            <table>
+                <form>
+                    <tr>
+
+                        <td onclick="SetYes('neighborhood_improving', 'neighborhood_condition');">
+                            <Input type="radio" name="neighborhood_condition" id='neighborhood_improving'/> Improving
+                        </td>
+                        <td onclick="SetYes('neighborhood_stable', 'neighborhood_condition');">
+                            <Input type="radio" name="neighborhood_condition" id='neighborhood_stable'/> Stable
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('neighborhood_declining', 'neighborhood_condition');">
+                            <Input type="radio" name="neighborhood_condition" id='neighborhood_declining'/> Declining
+                        </td>
+                        <td onclick="SetYes('neighborhood_unknown', 'neighborhood_condition');">
+                            <Input type="radio" name="neighborhood_condition" id='neighborhood_unknown'/> Unknown
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetYes('high_vandalism', 'neighborhood_condition');">
+                            <Input type="radio" name="neighborhood_condition" id='high_vandalism'/> High Vandalism
+                        </td>
+
+                    </tr>
+                </form>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">EXTERIOR CONDITIONS/ MARKETABILITY</h3>
+    </div>
+    <div class="panel-body">
+        How many sides of the property were you able to view?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('1side', 'how_many_sides');">
+                            <Input type="radio" name="how_many_sides" id='1side'/> 1 side
+                        </td>
+                        <td onclick="SetYes('2sides', 'how_many_sides');">
+                            <Input type="radio" name="how_many_sides" id='2sides'/> 2 sides
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('3sides', 'how_many_sides');">
+                        <Input type="radio" name="how_many_sides" id='3sides'/> 3 sides
+                    </td>
+                    <td onclick="SetYes('all_sides', 'how_many_sides');">
+                        <Input type="radio" name="how_many_sides" id='all_sides'/> All sides
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('none', 'how_many_sides');">
+                        <Input type="radio" name="how_many_sides" id='none'/> None
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        Does property appear vacant?
+        <div class="bs-checkbox">
+            <table>
+                <th></th>
+                <th></th>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('appear_vacant_yes', 'appear_vacant');">
+                            <Input type="radio" name="appear_vacant" id='appear_vacant_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('appear_vacant_no', 'appear_vacant');">
+                            <Input type="radio" name="appear_vacant" id='appear_vacant_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        Safety or habitability violations posted?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('safety_violations_yes', 'safety_violations')">
+                            <Input type="radio" name="safety_violations" id='safety_violations_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('safety_violations_no', 'safety_violations');">
+                            <Input type="radio" name="safety_violations" id='safety_violations_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        Is the property presently for sale as evidenced by a 'For Sale' sign?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('for_sale_sign_yes', 'presently_for_sale');">
+                            <Input type="radio" name="presently_for_sale" id='for_sale_sign_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('for_sale_sign_no', 'presently_for_sale');">
+                            <Input type="radio" name="presently_for_sale" id='for_sale_sign_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        Is the style typical of the neighborhood?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('typical_yes', 'typical_neighborhood');">
+                            <Input type="radio" name="typical_neighborhood" id='typical_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('typical_no', 'typical_neighborhood');">
+                            <Input type="radio" name="typical_neighborhood" id='typical_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        Is the home under construction or renovation?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('renovation_yes', 'under_construction');">
+                            <Input type="radio" name="under_construction" id='renovation_yes'/> YES
+                        </td>
+                        <td onclick="SetYes('renovation_no', 'under_construction');">
+                            <Input type="radio" name="under_construction" id='renovation_no'/> NO
+                        </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        What is the condition of the roof?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Appears_New' , 'roof_condition');">
+                            <Input type="radio" name="roof_condition" id="Appears_New"/> Appears new or nearly new
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('roof_average_Condition' , 'roof_condition');">
+                        <Input type="radio" name="roof_condition" id="roof_average_Condition"/> Average condition
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Significant_Wear' , 'roof_condition');">
+                        <Input type="radio" name="roof_condition" id="Significant_Wear"/> Significant wear
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('End_Of_Useful' , 'roof_condition');">
+                        <Input type="radio" name="roof_Condition" id="End_Of_Useful"/> End of useful life
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Not_Viewable' , 'roof_condition');">
+                        <Input type="radio" name="roof_condition" id="Not_Viewable"/> Not viewable
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        What is the condition of the windows?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('New_Upgrated' , 'windows_condition');">
+                            <Input type="radio" name="windows_condition" id="New_Upgrated"/> Appears new or upgraded
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Intact' , 'windows_condition');">
+                        <Input type="radio" name="windows_condition" id="Intact"/> Intact
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Noticeable_Damage' , 'windows_condition');">
+                        <Input type="radio" name="windows_condition" id="Noticeable_Damage"/> Noticeable damage
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Significant_Damage' , 'windows_condition');">
+                        <Input type="radio" name="windows_condition" id="Significant_Damage"/> Significant damage
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Unable_To_Verify' , 'windows_condition');">
+                        <Input type="radio" name="windows_condition" id="Unable_To_Verify"/> Unable to verify
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        Indicate the majority of exterior finish material:
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Brick1' , 'finish_material');">
+                            <Input type="radio" name="finish_material" id="Brick1"/> Brick
+                        </td>
+                        <td onclick="SetYes('Aluminum_Vinyl' , 'finish_material');">
+                            <Input type="radio" name="finish_material" id="Aluminum_Vinyl"/> Aluminum/Vinyl
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Compositon1' , 'finish_material');">
+                        <Input type="radio" name="finish_material" id="Compositon1"/> Compositon
+                    </td>
+                    <td onclick="SetYes('Stucco1' , 'finish_material');">
+                        <Input type="radio" name="finish_material" id="Stucco1"/> Stucco
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Other1' , 'finish_material');">
+                        <Input type="radio" name="finish_material" id="Other1"/> Other
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        What is the condition of the exterior finish material?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Appears_New1' , 'condition_finish_material');">
+                            <Input type="radio" name="condition_finish_material" id="Appears_New1"/> Appears new or
+                            nearly new
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('finish_average_Condition' , 'condition_finish_material');">
+                        <Input type="radio" name="condition_finish_material" id="finish_average_Condition"/> Average
+                        condition
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Near_End_Useful' , 'condition_finish_material');">
+                        <Input type="radio" name="condition_finish_material" id="Near_End_Useful"/> Near end of useful
+                        life
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Unable_To_Verify1' , 'condition_finish_material');">
+                        <Input type="radio" name="condition_finish_material" id="Unable_To_Verify1"/> Unable to verify
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        What is the condition of the foundation?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Appears_Intact' , 'condition_foundation');">
+                            <Input type="radio" name="condition_Foundation" id="Appears_Intact"/> Appears intact
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Noticeable_Damage1' , 'condition_foundation');">
+                        <Input type="radio" name="condition_Foundation" id="Noticeable_Damage1"/> Noticeable damage
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Significant_Damage1' , 'condition_foundation');">
+                        <Input type="radio" name="condition_Foundation" id="Significant_Damage1"/> Significant damage
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Unable_To_Verify2' , 'condition_foundation');">
+                        <Input type="radio" name="condition_Foundation" id="Unable_To_Verify2"/> Unable to verify
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        What is the condition of subject property landscape?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Superior1' , 'condition_landscape');">
+                            <Input type="radio" name="condition_landscape" id="Superior1"/> Superior
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Consistent1' , 'condition_landscape');">
+                        <Input type="radio" name="condition_landscape" id="Consistent1"/> Consistent
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Inferior1' , 'condition_landscape');">
+                        <Input type="radio" name="condition_landscape" id="Inferior1"/> Inferior
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Substantially_Inferior' , 'condition_landscape');">
+                        <Input type="radio" name="condition_landscape" id="Substantially_Inferior"/> Substantially
+                        inferior
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        What is the overall codition of the property in relation to other properties in the neighborhood?
+        <div class="bs-checkbox">
+            <table>
+                <tr>
+                    <form>
+                        <td onclick="SetYes('Superior2' , 'relation_to_properties');">
+                            <Input type="radio" name="relation_to_properties" id="Superior2"/> Superior
+                        </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Consistent2' , 'relation_to_properties');">
+                        <Input type="radio" name="relation_to_properties" id="Consistent2"/> Consistent
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Inferior2' , 'relation_to_properties');">
+                        <Input type="radio" name="relation_to_properties" id="Inferior2"/> Inferior
+                    </td>
+                </tr>
+                <tr>
+                    <td onclick="SetYes('Substantially_Inferior1' , 'relation_to_properties');">
+                        <Input type="radio" name="relation_to_properties" id="Substantially_Inferior1"/> Substantially
+                        inferior
+                    </td>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label> General Comments: </label>
+            <input type="text" class="form-control" id="general_comments"/>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">EXTERNAL FACTORS</h3>
+        </div>
+        <div class="panel-body">
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('High_Tension' , 'external_factors');">
+                            <Input type="checkbox" name="High tension" id="High_Tension"/> High tension electrical wire
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Vacant_Abandonated' , 'external_factors');">
+                            <Input type="checkbox" name="Vacant/ abandonated" id="Vacant_Abandonated"/>
+                            Vacant/abandonated properties nearby
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Landfill' , 'external_factors');">
+                            <Input type="checkbox" name="Landfill" id="Landfill"/> Landfill or transfer station
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Comercial_Industrial' , 'external_factors');">
+                            <Input type="checkbox" name="Commercial" id="Comercial_Industrial"/> Commercial/industrial
+                            property
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Railroad_Track' , 'external_factors');">
+                            <Input type="checkbox" name="Railroad" id="Railroad_Track"/> Railroad track
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Interstate_Freeway' , 'external_factors');">
+                            <Input type="checkbox" name="Interstate" id="Interstate_Freeway"/> Interstate / freeway /
+                            highway
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Private_Public_Airport' , 'external_factors');">
+                            <Input type="checkbox" name="Private" id="Private_Public_Airport"/> Private or public
+                            airport
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('High_Traffic' , 'external_factors');">
+                            <Input type="checkbox" name="High traffic" id="High_Traffic"/> High traffic flow
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Negative_Noise' , 'external_factors');">
+                            <Input type="checkbox" name="Negative" id="Negative_Noise"/> Negative noise flow
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Adverse_View' , 'external_factors');">
+                            <Input type="checkbox" name="Adverse" id="Adverse_View"/> Adverse view (describe in
+                            comments)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Adjacent_Golf' , 'external_factors');">
+                            <Input type="checkbox" name="Adjacent" id="Adjacent_Golf"/> Adjacent to golf course
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('High_Tension' , 'external_factors');">
+                            <Input type="checkbox" name="Golf" id="Golf_Course"/> Golf course neighborhood
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Water_Accress' , 'external_factors');">
+                            <Input type="checkbox" name="Water" id="Water_Accress"/> Water accress
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Waterfront1' , 'external_factors');">
+                            <Input type="checkbox" name="Waterfront" id="Waterfront1"/> Waterfront property
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Water_View' , 'external_factors');">
+                            <Input type="checkbox" name="Water view" id="Water_View"/> Water view
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Gated_Community' , 'external_factors');">
+                            <Input type="checkbox" name="Gated" id="Gated_Community"/> Gated community
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Resort_Property' , 'external_factors');">
+                            <Input type="checkbox" name="Resort" id="Resort_Property"/> Resort property
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Adjacent_Park' , 'external_factors');">
+                            <Input type="checkbox" name="Adjacent" id="Adjacent_Park"/> Adjacent to park land
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('Beneficial_View' , 'external_factors');">
+                            <Input type="checkbox" name="Beneficial" id="Beneficial_View"/> Beneficial view (describe in
+                            comments)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td onclick="SetOccupancyExternal('None_Of_Above1' , 'external_factors');">
+                            <Input type="checkbox" name="None" id="None_Of_Above1"/> None of the above
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Support all external factors selected with comments. Also include other external
+                factors observed unique to the subject property for the area that would have a material on the subject's
+                marketability.</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="external_factors_comments"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">REQUIRED PHOTOS</h3>
+        </div>
+        <div class="panel-body">
+            - Front View (min 1)<br/>
+            - Address Number View (min 1)<br/>
+            - Occupancy Sign (min 1)<br/>
+            - Street Sign (min 1)<br/>
+            - Neighborhood (min 1)
+        </div>
+    </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">COMMENTS</h3>
+        </div>
+        <div class="panel-body">
+            <label></label>
+            <input type="text" class="form-control" id="comments"/>
+        </div>
+    </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">CHECKLIST QUESTIONS</h3>
+        </div>
+        <div class="panel-body">
+            <p>Does the following damage exist at the property that meets the Big Six definition: Fire, Flood, Tornado,
+                Hurricane, Boiler (Multi-Unit), Earthquake?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('Big_Six_yes', 'six_damage');">
+                                <Input type="radio" name="six_damage" id="Big_Six_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('Big_Six_no', 'six_damage');">
+                                <Input type="radio" name="six_damage" id="Big_Six_no"/> NO
+                            </td>
+                            <td onclick="SetYes('Big_Six_na', 'six_damage');">
+                                <Input type="radio" name="six_damage" id="Big_Six_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+
+            <p>Is there any obvious health and safety issue at the property?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('obvious_health_yes', 'safety_issue');">
+                                <Input type="radio" name="safety_issue" id="obvious_health_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('obvious_health_no', 'safety_issue');">
+                                <Input type="radio" name="safety_issue" id="obvious_health_no"/> NO
+                            </td>
+                            <td onclick="SetYes('obvious_health_na', 'safety_issue');">
+                                <Input type="radio" name="safety_issue" id="obvious_health_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Is exterior debris found?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('exterior_debris_yes', 'exterior_debris');">
+                                <Input type="radio" name="exterior_debris" id="exterior_debris_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('exterior_debris_no', 'exterior_debris');">
+                                <Input type="radio" name="exterior_debris" id="exterior_debris_no"/> NO
+                            </td>
+                            <td onclick="SetYes('exterior_debris_na', 'exterior_debris');">
+                                <Input type="radio" name="exterior_debris" id="exterior_debris_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Lawn requires maintenance?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('lawn_requires_yes', 'lawn_maintenance');">
+                                <Input type="radio" name="lawn_maintenance" id="lawn_requires_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('lawn_requires_no', 'lawn_maintenance');">
+                                <Input type="radio" name="lawn_maintenance" id="lawn_requires_no"/> NO
+                            </td>
+                            <td onclick="SetYes('lawn_requires_na', 'lawn_maintenance');">
+                                <Input type="radio" name="lawn_maintenance" id="lawn_requires_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Is the property Vacant?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('property_vacant_yes', 'property_vacant');">
+                                <Input type="radio" name="property_vacant" id="property_vacant_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('property_vacant_no', 'property_vacant');">
+                                <Input type="radio" name="property_vacant" id="property_vacant_no"/> NO
+                            </td>
+                            <td onclick="SetYes('property_vacant_na', 'property_vacant');">
+                                <Input type="radio" name="property_vacant" id="property_vacant_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Observed Escalated Events or Issues?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('Escalated_events_yes', 'escalated_events');">
+                                <Input type="radio" name="escalated_events" id="Escalated_events_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('Escalated_events_no', 'escalated_events');">
+                                <Input type="radio" name="escalated_events" id="Escalated_events_no"/> NO
+                            </td>
+                            <td onclick="SetYes('Escalated_events_na', 'escalated_events');">
+                                <Input type="radio" name="escalated_events" id="Escalated_events_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Is there roof damage that needs repaired?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('roof_damage_yes', 'roof_damage');">
+                                <Input type="radio" name="roof_damage" id="roof_damage_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('roof_damage_no', 'roof_damage');">
+                                <Input type="radio" name="roof_damage" id="roof_damage_no"/> NO
+                            </td>
+                            <td onclick="SetYes('roof_damage_na', 'roof_damage');">
+                                <Input type="radio" name="roof_damage" id="roof_damage_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Does the property have sings of vandalism or obious crime scene?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('vandalism_crime_yes', 'signs_vandalism');">
+                                <Input type="radio" name="signs_vandalism" id="vandalism_crime_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('vandalism_crime_no', 'signs_vandalism');">
+                                <Input type="radio" name="signs_vandalism" id="vandalism_crime_no"/> NO
+                            </td>
+                            <td onclick="SetYes('vandalism_crime_na', 'signs_vandalism');">
+                                <Input type="radio" name="signs_vandalism" id="vandalism_crime_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Any unsecured openings to the property?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('unsecured_property_yes', 'unsecured_openings');">
+                                <Input type="radio" name="unsecured_openings" id="unsecured_property_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('unsecured_property_no', 'unsecured_openings');">
+                                <Input type="radio" name="unsecured_openings" id="unsecured_property_no"/> NO
+                            </td>
+                            <td onclick="SetYes('unsecured_property_na', 'unsecured_openings');">
+                                <Input type="radio" name="unsecured_openings" id="unsecured_property_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>Has a violation or notice been posted?</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('notice_posted_yes', 'notice_posted');">
+                                <Input type="radio" name="notice_posted" id="notice_posted_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('notice_posted_no', 'notice_posted');">
+                                <Input type="radio" name="notice_posted" id="notice_posted_no"/> NO
+                            </td>
+                            <td onclick="SetYes('notice_posted_na', 'notice_posted');">
+                                <Input type="radio" name="notice_posted" id="notice_posted_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p>I and each of my employees or co-workers signed into this work order have read and accepted the following
+                code of conduct.</p>
+            <div class="bs-checkbox">
+                <table>
+                    <tr>
+                        <form>
+                            <td onclick="SetYes('employees_signed_yes', 'code_of_conduct');">
+                                <Input type="radio" name="code_of_conduct" id="employees_signed_yes"/> YES
+                            </td>
+                            <td onclick="SetYes('employees_signed_no', 'code_of_conduct');">
+                                <Input type="radio" name="code_of_conduct" id="employees_signed_no"/> NO
+                            </td>
+                            <td onclick="SetYes('employees_signed_na', 'code_of_conduct');">
+                                <Input type="radio" name="code_of_conduct" id="employees_signed_na"/> NA
+                            </td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" onclick="Validate();">Submit</button>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous">
+
+    </script>
+    <script type="text/javascript">
+
+        window.onload = function () {
+            InsertDateName();
+        };
+        </script>
+</div>
+</body>
+</html>
