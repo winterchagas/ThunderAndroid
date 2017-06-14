@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script>
+
+        function FillForm(dict) {
+            var res = dict.replace(/'/g, '"');
+            var obj = JSON.parse(res);
+            document.getElementById("id").innerHTML = obj.id.substring(0,6);
+            document.getElementById("client").innerHTML = obj.client;
+            document.getElementById("loan").innerHTML = obj.loan;
+            document.getElementById("client_order").innerHTML = obj.client_order;
+            document.getElementById("work_code").innerHTML = obj.work_code;
+            document.getElementById("address").innerHTML = obj.address;
+            document.getElementById("owner").innerHTML = obj.owner;
+            document.getElementById("due_date").innerHTML = obj.start_date + " - " + obj.due_date;
+            document.getElementById("mtg_company").innerHTML = obj.mtg_company;
+            document.getElementById("price").innerHTML = obj.price;
+            document.getElementById("vacant").innerHTML = obj.vacant;
+            document.getElementById("instructions").innerHTML = obj.instructions;
+            document.getElementById("latitude").innerHTML = obj.latitude;
+            document.getElementById("longitude").innerHTML = obj.longitude;
+        }
+
+        /*window.onload = function () {
+         FillForm(dict);
+         //AndroidFunction.callAsync();
+         };*/
+    </script>
+
+    <title>APP</title>
+    <meta charset="utf-8"/>
+    <meta name="description" content="APP"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+
+    <style>
+
+        td, th {
+            text-align: left;
+            width: 50%;
+        }
+
+        .panel {
+            margin-right: 1px;
+            margin-left: 1px;
+            margin-bottom: 3px;
+            border-color: #232424;
+            border-width: 7px 7px 7px 7px;
+        }
+
+        .panel > .panel-heading {
+            color: #bbf3ff;
+            background-image: none;
+            background-color: #232424;
+            border-color: #434444;
+        }
+
+        .panel > .panel-body {
+            color: #bdbebe;
+            font-size: large;
+            background-image: none;
+            background-color: #2a2b2b;
+            padding: 0px 9px 0px 10px;
+        }
+
+        .text {
+            color: #7e7e7e
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Property Information</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>Order ID</th>
+                <td class="text" id="id">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Client</th>
+                <td class="text" id="client">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Loan#</th>
+                <td class="text" id="loan">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Client Order#</th>
+                <td class="text" id="client_order">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Work Code</th>
+                <td class="text" id="work_code">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Address</th>
+                <td class="text" id="address">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Owner</th>
+                <td class="text" id="owner">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Date Window</th>
+                <td class="text" id="due_date">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Mtg. Company</th>
+                <td class="text" id="mtg_company">
+                </td>
+            </tr>
+
+            <tr>
+                <th>Price</th>
+                <td class="text" id="price">
+                </td>
+            </tr>
+
+            <tr>
+                <th>Vacant</th>
+                <td class="text" id="vacant">
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Instructions</h3>
+    </div>
+    <div class="panel-body">
+        <p class="text" id="instructions"></p>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Geo Location</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+
+            <tr>
+                <th>Latitude</th>
+                <td class="text" id="latitude">
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Longitude</th>
+                <td class="text" id="longitude">
+
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Property Notes</h3>
+    </div>
+    <div class="panel-body">
+        <input type="text" class="form-control" id="property_notes"/>
+    </div>
+</div>
+
+
+</body>
+</html>
