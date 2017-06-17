@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Download"
+        android:id="@+id/download"></item>
+
+    <item android:title="Upload"
+        android:id="@+id/upload">  </item>
+
+    <item android:title="Search"
+        android:id="@+id/search">  </item>
+
+    <item android:title="Restore"
+        android:id="@+id/restore">  </item>
+
+    <item android:title="Log out"
+        android:id="@+id/logout">  </item>
+
+    <item android:title="Send Feedback"
+        android:id="@+id/feedback">  </item>
+
+</menu>
